@@ -74,7 +74,7 @@ int ledToToggle = 4;
 
 int main(void)
 {
-	// Varaible for character recived by UART.
+        // Varaible for character recived by UART.
 	int receivedChar;
 
 	//RPINR18 is a regsiter for selectable input mapping (see Table 10-2) for 
@@ -90,7 +90,9 @@ int main(void)
 	// Use LATB to write value to PORTB. This enables a Read-Modify-Write 
 	// behavior used in the interrupt later. Set the current output to
 	// 0 .
-	LATB = 0;
+
+// This was changed from 0
+	LATB = 0xFFFF;
 
 	// TRISB controls direction for all PORTB pins, where 0 -> output, 1 -> input.
 	// Configure RB15, RB14, RB13, and RB12 as outputs.
@@ -172,7 +174,7 @@ int main(void)
 	//           c.) Entering the size of heap, e.g. 512, under Heap Size
 	//        2. printf function is advanced and using printf may require 
 	//           significant code size (6KB-10KB).   
-	printf("\n\n\CHRISTOPHER SANFORD!\n\r");
+	printf("\n\n\CHRISTOPHER_SANFORD!\n\r");
 
 	// Print a message requesting the user to select a LED to toggle.
 	printf("Select LED to Toggle (4-7): ");
@@ -188,7 +190,10 @@ int main(void)
 
 
 		// Use the UART RX interrupt flag to wait until we recieve a character.
-		if(IFS0bits.U1RXIF == 1) {	
+		if(IFS0bits.U1RXIF == 1) {
+
+// This was added
+                    LATB=0xFFFF;
 
 			// U1RXREG stores the last character received by the UART. Read this 
 			// value into a local variable before processing.
