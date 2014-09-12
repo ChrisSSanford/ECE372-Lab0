@@ -72,6 +72,9 @@ int ledToToggle = 4;
 
 // ******************************************************************************************* //
 
+//Added
+typedef enum stateTypeEnum {WaitForPress,WaitForRelease,LEDToggle}stateType;
+
 int main(void)
 {
         // Varaible for character recived by UART.
@@ -180,19 +183,52 @@ int main(void)
 
 	// The main loop for your microcontroller should not exit (return), as
 	// the program should run as long as the device is powered on. 
-	while(1)
+	
+        stateType state;
+        state = WaitForPress; // state initalization
+
+        while(1)
 	{
 		// **TODO** Modified the main loop of the software application such that 
 		// whenever the SW1 is continuously pressed, the currently selected LED 
 		// will blink twice as fast. When SW1 is released the LEDs will blink at 
 		// the initially defined rate.
+
+            /*
                 if(PORTBbits.RB5 == 0){
                     PR1 = 14400/2;
+                    TMR1 = 0;
                 }
                 else{
                     PR1 = 14400;
+                    TMR1 = 0;
                 }
-            
+            */
+
+            switch (state) {
+                case WaitForPress:
+                    if(PORTBbits.RB5 == 0){
+                        //button press?
+                        state = LEDToggle;
+                        PR1 = 14400/2;
+                        TMR1 = 0;
+                    }
+                    break;
+                case LEDToggle:
+                    LATB = LATB ^ 0x8000;
+                    state = WaitForRelease;
+                    break;
+                case WaitForRelease:
+                    if(PORTBbits.RB5 == 1){
+                        //button release?
+                        state = WaitForPress;
+                        PR1 = 14400;
+                        TMR1 = 0;
+                    }
+                    break;
+            } //switch
+
+
 		// Use the UART RX interrupt flag to wait until we recieve a character.
 		if(IFS0bits.U1RXIF == 1) {
 // This was added
