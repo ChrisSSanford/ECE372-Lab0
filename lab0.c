@@ -90,7 +90,6 @@ int main(void)
 	// Use LATB to write value to PORTB. This enables a Read-Modify-Write 
 	// behavior used in the interrupt later. Set the current output to
 	// 0 .
-
 // This was changed from 0
 	LATB = 0xFFFF;
 
@@ -103,7 +102,7 @@ int main(void)
 
 	// **TODO** SW1 of the 16-bit 28-pin Starter Board is connected to pin RB??. 
 	// Assign the TRISB bit for this pin to configure this port as an input.
-
+        TRISBbits.TRISB5 = 1;
 
 	// Clear Timer value (i.e. current tiemr value) to 0
 	TMR1 = 0;				
@@ -187,13 +186,17 @@ int main(void)
 		// whenever the SW1 is continuously pressed, the currently selected LED 
 		// will blink twice as fast. When SW1 is released the LEDs will blink at 
 		// the initially defined rate.
-
-
+                if(PORTBbits.RB5 == 0){
+                    PR1 = 14400/2;
+                }
+                else{
+                    PR1 = 14400;
+                }
+            
 		// Use the UART RX interrupt flag to wait until we recieve a character.
 		if(IFS0bits.U1RXIF == 1) {
-
 // This was added
-                    LATB=0xFFFF;
+                   LATB=0xFFFF;
 
 			// U1RXREG stores the last character received by the UART. Read this 
 			// value into a local variable before processing.
