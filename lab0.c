@@ -1,3 +1,4 @@
+// Student Name: Christoper Sanford
 // ******************************************************************************************* //
 //
 // File:         lab0.c   
@@ -73,7 +74,7 @@ int ledToToggle = 4;
 // ******************************************************************************************* //
 
 //Added
-typedef enum stateTypeEnum {WaitForPress,WaitForRelease,LEDToggle}stateType;
+typedef enum stateTypeEnum {WaitForPress,WaitForRelease,LEDToggle}stateType;    // defines different states into a matrix
 
 int main(void)
 {
@@ -94,18 +95,19 @@ int main(void)
 	// behavior used in the interrupt later. Set the current output to
 	// 0 .
 // This was changed from 0
-	LATB = 0xFFFF;
+        LATB = 0xFFFF; // Turns off the other LEDs
+	stateType state; // Creates state
 
-	// TRISB controls direction for all PORTB pins, where 0 -> output, 1 -> input.
+        // TRISB controls direction for all PORTB pins, where 0 -> output, 1 -> input.
 	// Configure RB15, RB14, RB13, and RB12 as outputs.
-	TRISBbits.TRISB15 = 0;
-	TRISBbits.TRISB14 = 0;
-	TRISBbits.TRISB13 = 0;
-	TRISBbits.TRISB12 = 0;
+	TRISBbits.TRISB15 = 0; // Configure RB15 as output
+	TRISBbits.TRISB14 = 0; // Configure RB14 as output
+	TRISBbits.TRISB13 = 0; // Configure RB13 as output
+	TRISBbits.TRISB12 = 0; // Configure RB12 as output
 
 	// **TODO** SW1 of the 16-bit 28-pin Starter Board is connected to pin RB??. 
 	// Assign the TRISB bit for this pin to configure this port as an input.
-        TRISBbits.TRISB5 = 1;
+        TRISBbits.TRISB5 = 1; // Configures B5 (the button) as
 
 	// Clear Timer value (i.e. current tiemr value) to 0
 	TMR1 = 0;				
@@ -183,8 +185,7 @@ int main(void)
 
 	// The main loop for your microcontroller should not exit (return), as
 	// the program should run as long as the device is powered on. 
-	
-        stateType state;
+
         state = WaitForPress; // state initalization
 
         while(1)
@@ -207,23 +208,24 @@ int main(void)
 
             switch (state) {
                 case WaitForPress:
-                    if(PORTBbits.RB5 == 0){
+                    if(PORTBbits.RB5 == 0){  // if the button is pressed
                         //button press?
-                        state = LEDToggle;
-                        PR1 = 14400/2;
-                        TMR1 = 0;
+                        state = LEDToggle;  // sets state to LEDToggle
+                        PR1 = 14400/2;      // sets the flashing to double the speed
+                        TMR1 = 0;           // resets the timer
                     }
                     break;
-                case LEDToggle:
-                    LATB = LATB ^ 0x8000;
-                    state = WaitForRelease;
+                case LEDToggle: // new case
+                    LATB = LATB ^ 0x8000; // changes the current LED
+                    state = WaitForRelease; // sets state to WaitForRelease
+                    LATBbits.LATB15 = 1;    //turns off LED4
                     break;
-                case WaitForRelease:
-                    if(PORTBbits.RB5 == 1){
+                case WaitForRelease:    // new case
+                    if(PORTBbits.RB5 == 1){ // if the button is not pressed
                         //button release?
-                        state = WaitForPress;
-                        PR1 = 14400;
-                        TMR1 = 0;
+                        state = WaitForPress;   // sets state to WaitForPress
+                        PR1 = 14400;    // sert speed back to the original speed
+                        TMR1 = 0;   // resets the timer
                     }
                     break;
             } //switch
@@ -231,8 +233,8 @@ int main(void)
 
 		// Use the UART RX interrupt flag to wait until we recieve a character.
 		if(IFS0bits.U1RXIF == 1) {
-// This was added
-                   LATB=0xFFFF;
+
+                   LATB = 0xFFFF;   // This was added to keep the other LEDs off
 
 			// U1RXREG stores the last character received by the UART. Read this 
 			// value into a local variable before processing.
