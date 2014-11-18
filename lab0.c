@@ -81,7 +81,7 @@ int main(void)
         // Varaible for character recived by UART.
 	int receivedChar;
 
-	//RPINR18 is a regsiter for selectable input mapping (see Table 10-2) for 
+	// RPINR18 is a regsiter for selectable input mapping (see Table 10-2) for
 	// for UART1. U1RX is 8 bit value used to specifiy connection to which
 	// RP pin. RP9 is used for this configuration. Physical Pin 18.
 	RPINR18bits.U1RXR = 9;	
@@ -105,7 +105,7 @@ int main(void)
 	TRISBbits.TRISB13 = 0; // Configure RB13 as output
 	TRISBbits.TRISB12 = 0; // Configure RB12 as output
 
-	// **TODO** SW1 of the 16-bit 28-pin Starter Board is connected to pin RB??. 
+	// SW1 of the 16-bit 28-pin Starter Board is connected to pin RB5.
 	// Assign the TRISB bit for this pin to configure this port as an input.
         TRISBbits.TRISB5 = 1; // Configures B5 (the button) as
 
@@ -163,7 +163,7 @@ int main(void)
 	//     RIDLE             = 0     (Reciver is active)
 	U1STA  = 0x0440; 		// Reset status register and enable TX & RX
 
-	// Clear the UART RX interrupt flag. Althouhg we are not using a ISR for 
+	// Clear the UART RX interrupt flag. Although we are not using a ISR for
 	// the UART receive, the UART RX interrupt flag can be used to deermine if 
 	// we have recived a character from he UART. 
 	IFS0bits.U1RXIF = 0;
@@ -186,8 +186,7 @@ int main(void)
 	// The main loop for your microcontroller should not exit (return), as
 	// the program should run as long as the device is powered on. 
 
-        state = WaitForPress; // state initalization
-
+       
         while(1)
 	{
 		// **TODO** Modified the main loop of the software application such that 
